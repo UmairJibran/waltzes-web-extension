@@ -4,6 +4,10 @@ import { JobApplicationPopup } from './components/JobApplicationPopup';
 import { useAuthStore } from './store/auth';
 import './styles/tailwind.css';
 
+// Get context information from window object
+const waltzesContext = window.waltzesContext || { mode: 'page_scan' };
+const { mode, selectedText } = waltzesContext;
+
 // Create container for our app
 const container = document.createElement('div');
 container.id = 'job-application-extension-root';
@@ -29,7 +33,11 @@ useAuthStore
   .then(() => {
     root.render(
       <React.StrictMode>
-        <JobApplicationPopup onClose={removePopup} />
+        <JobApplicationPopup
+          onClose={removePopup}
+          mode={mode}
+          selectedText={selectedText}
+        />
       </React.StrictMode>
     );
   });

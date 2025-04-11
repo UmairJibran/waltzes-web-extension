@@ -5,6 +5,8 @@ export interface GenerateApplicationRequest {
     jobUrl: string;
     generateResume: boolean;
     generateCoverLetter: boolean;
+    selectedText?: string;
+    mode?: 'page_scan' | 'selected_text';
 }
 
 export interface JobStatus {
@@ -61,4 +63,4 @@ export const getApplicationStatus = async (applicationId: string): Promise<JobSt
 
     const apiResponse = await handleAPIResponse<JobStatus>(response);
     return apiResponse.data!;
-}; 
+};
