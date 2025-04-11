@@ -27,7 +27,7 @@ export const StatusPanel: React.FC<Props> = ({
         label={
           mode === 'selected_text'
             ? 'Processing Selected Text'
-            : 'Scraping Job Post'
+            : 'Scanning Job Post'
         }
         tooltip={
           mode === 'selected_text'

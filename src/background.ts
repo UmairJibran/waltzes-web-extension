@@ -1,4 +1,3 @@
-
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
         id: 'waltzes-analyze',
@@ -28,14 +27,28 @@ const injectContentScript = async (tabId: number, mode: 'page_scan' | 'selected_
                 files: ['content.styles.css'],
             });
 
-            await chrome.scripting.executeScript({
-                target: { tabId },
-                func: (injectedMode, injectedText) => {
-                    const mode = injectedMode as 'page_scan' | 'selected_text';
-                    window.waltzesContext = { mode, selectedText: injectedText };
-                },
-                args: [mode, selectedText]
-            });
+            if (mode === 'page_scan') {
+                await chrome.scripting.executeScript({
+                    target: { tabId },
+                    func: () => {
+                        window.waltzesContext = {
+                            mode: 'page_scan' as const,
+                            selectedText: null
+                        };
+                    }
+                });
+            } else {
+                await chrome.scripting.executeScript({
+                    target: { tabId },
+                    func: (text) => {
+                        window.waltzesContext = {
+                            mode: 'selected_text' as const,
+                            selectedText: text || null
+                        };
+                    },
+                    args: [selectedText || '']
+                });
+            }
 
             await chrome.scripting.executeScript({
                 target: { tabId },

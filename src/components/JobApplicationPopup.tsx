@@ -18,7 +18,7 @@ const POLL_INTERVAL = 1000;
 interface Props {
   onClose: () => void;
   mode?: 'page_scan' | 'selected_text';
-  selectedText?: string;
+  selectedText: string | null;
 }
 
 export const JobApplicationPopup: React.FC<Props> = ({
@@ -62,7 +62,8 @@ export const JobApplicationPopup: React.FC<Props> = ({
         jobUrl: window.location.href,
         generateResume: selectedOptions.resume,
         generateCoverLetter: selectedOptions.coverLetter,
-        selectedText: mode === 'selected_text' ? selectedText : undefined,
+        selectedText:
+          mode === 'selected_text' && selectedText ? selectedText : undefined,
         mode,
       });
       setApplicationId(response.applicationId);

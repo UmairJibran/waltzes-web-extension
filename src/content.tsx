@@ -5,7 +5,10 @@ import { useAuthStore } from './store/auth';
 import './styles/tailwind.css';
 
 // Get context information from window object
-const waltzesContext = window.waltzesContext || { mode: 'page_scan' };
+const waltzesContext = window.waltzesContext || {
+  mode: 'page_scan',
+  selectedText: null,
+};
 const { mode, selectedText } = waltzesContext;
 
 // Create container for our app
