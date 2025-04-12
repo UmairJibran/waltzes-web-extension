@@ -9,6 +9,7 @@ import { signIn } from '../api/auth';
 import { StatusPanel } from './StatusPanel';
 import { DownloadPanel } from './DownloadPanel';
 import { OptionCheckbox } from './OptionCheckbox';
+import { StatusIndicator } from './StatusIndicator';
 import { getErrorMessage } from '../utils/errors';
 import { randomLoadingFact } from '../constants';
 
@@ -16,9 +17,15 @@ const POLL_INTERVAL = 1000;
 
 interface Props {
   onClose: () => void;
+  mode?: 'page_scan' | 'selected_text';
+  selectedText: string | null;
 }
 
-export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
+export const JobApplicationPopup: React.FC<Props> = ({
+  onClose,
+  mode = 'page_scan',
+  selectedText,
+}) => {
   const { isAuthenticated, setAuth } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,6 +62,9 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
         jobUrl: window.location.href,
         generateResume: selectedOptions.resume,
         generateCoverLetter: selectedOptions.coverLetter,
+        selectedText:
+          mode === 'selected_text' && selectedText ? selectedText : undefined,
+        mode,
       });
       setApplicationId(response.applicationId);
     } catch (error) {
@@ -207,15 +217,28 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
               <div className="space-y-6">
                 <div className="neo-container">
                   <h3 className="font-bold text-xl mb-2 text-primary-heading">
-                    Current Page{' '}
+                    {mode === 'selected_text'
+                      ? 'Selected Text'
+                      : 'Job Application'}
                     <small className="text-secondary-label text-sm">
-                      Page must be public for best results
+                      {mode === 'selected_text'
+                        ? ' (Using selected text)'
+                        : ' (Scanning page, please make sure the page is publicly accessible)'}
                     </small>
                   </h3>
                   <p className="text-secondary-text">{document.title}</p>
                   <p className="text-secondary-text truncate">
                     {window.location.href}
                   </p>
+
+                  {mode === 'selected_text' && (
+                    <div className="mt-2 p-2 bg-blue-50 border-l-4 border-blue-500 text-sm">
+                      <div className="flex items-center">
+                        Using selected text instead of scanning the page (more
+                        accurate).
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-3">
@@ -256,6 +279,7 @@ export const JobApplicationPopup: React.FC<Props> = ({ onClose }) => {
                 <StatusPanel
                   status={jobStatus}
                   selectedOptions={selectedOptions}
+                  mode={mode}
                 />
                 {jobStatus.status === 'finished' && jobStatus.downloadUrls && (
                   <DownloadPanel downloadUrls={jobStatus.downloadUrls} />

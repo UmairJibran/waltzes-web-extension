@@ -5,10 +5,15 @@ type Status = 'done' | 'processing' | 'pending';
 interface Props {
   status: Status;
   label: string;
+  tooltip?: string;
 }
 
-export const StatusIndicator: React.FC<Props> = ({ status, label }) => (
-  <div className="flex items-center space-x-3">
+export const StatusIndicator: React.FC<Props> = ({
+  status,
+  label,
+  tooltip,
+}) => (
+  <div className="flex items-center space-x-3" title={tooltip}>
     <div
       className={`w-3 h-3 rounded-full ${
         status === 'done'

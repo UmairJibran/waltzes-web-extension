@@ -8,17 +8,32 @@ interface Props {
     resume: boolean;
     coverLetter: boolean;
   };
+  mode?: 'page_scan' | 'selected_text';
 }
 
-export const StatusPanel: React.FC<Props> = ({ status, selectedOptions }) => (
+export const StatusPanel: React.FC<Props> = ({
+  status,
+  selectedOptions,
+  mode,
+}) => (
   <div className="neo-container">
     <h3 className="font-bold text-xl mb-4 text-primary-heading">
       Status: {status.status.charAt(0).toUpperCase() + status.status.slice(1)}
     </h3>
+
     <div className="space-y-3">
       <StatusIndicator
         status={status.steps.scraping}
-        label="Scraping Job Post"
+        label={
+          mode === 'selected_text'
+            ? 'Processing Selected Text'
+            : 'Scanning Job Post'
+        }
+        tooltip={
+          mode === 'selected_text'
+            ? 'Using your selected text for better accuracy'
+            : undefined
+        }
       />
       {selectedOptions.resume && (
         <StatusIndicator
